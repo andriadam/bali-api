@@ -4,17 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Forum extends Model
 {
     use HasFactory;
-    protected $guarded =['id'];
+    protected $guarded = ['id'];
 
-    public function User(){
+    public function User(): BelongsTo
+    {
         $this->belongsTo(User::class);
     }
 
-    public function ForumComments()
+    public function ForumComments(): HasMany
     {
         $this->hasMany(ForumComment::class);
     }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -43,9 +44,9 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
-    public function Forums()
+    public function Forums(): HasMany
     {
-        $this->hasMany(Forum::class);
+        return $this->hasMany(Forum::class);
     }
 
     public function ForumComments()
