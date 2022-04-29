@@ -32,23 +32,14 @@ class ForumController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make(request()->all(), [
-            'title' => 'required|min:5',
-            'body' => 'required|min:10',
-            'category' => 'required'
-        ]);
+        $validator = Validator::make(request()->all(), $this->getRules());
 
         if ($validator->fails()) {
             return response()->json($validator->messages());
         }
 
-        try {
-            $user = auth()->userOrFail();
-        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
-            return response()->json(['message' => 'Not authenticated, you have to login first']);
-        };
+        $user = $this->getAuthUser();
 
-        // return response()->json(['user' => $user->Forums()]);
         // Simpan ke database
         $user->Forums()->create([
             'title' => request('title'),
@@ -80,7 +71,25 @@ class ForumController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make(request()->all(), $this->getRules());
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages());
+        }
+
+        // check ownership
+            // authorized
+        $this->getAuthUser();
+
+        // Simpan ke database
+        Forum::find($id)->update([
+            'title' => request('title'),
+            'slug' => Str::slug(request('title'), '-') . '-' . time(),
+            'body' => request('body'),
+            'category' => request('category'),
+        ]);
+
+        return response()->json(['message' => 'Successfully updated']);
     }
 
     /**
@@ -92,5 +101,22 @@ class ForumController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function getRules(){
+        return [
+            'title' => 'required|min:5',
+            'body' => 'required|min:10',
+            'category' => 'required'
+        ];
+    }
+
+    private function getAuthUser()
+    {
+        try {
+            return auth()->userOrFail();
+        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
+            return response()->json(['message' => 'Not authenticated, you have to login first']);
+        };
     }
 }
