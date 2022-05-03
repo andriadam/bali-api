@@ -24,6 +24,7 @@ Route::group(['middleware' => 'api'], function ($router){
         Route::post('me', 'AuthController@me');
     });
 
+    Route::get('forums/tag/{tag}', 'ForumController@filterTag');
     Route::apiResource('forums', 'ForumController');
     Route::apiResource('forums.comment', 'ForumCommentController');
     // forums/{idForum}/comments/{idComment}

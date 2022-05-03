@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthUserTrait;
+use App\Http\Resources\ForumResource;
 
 class ForumController extends Controller
 {
     use AuthUserTrait;
-    
+
     public function __construct()
     {
         return auth()->shouldUse('api');
@@ -24,7 +25,12 @@ class ForumController extends Controller
      */
     public function index()
     {
-        return Forum::with('User:id,username')->get();
+        return ForumResource::collection(Forum::with('User')->paginate(3));
+    }
+   
+    public function filterTag($tag)
+    {
+        return ForumResource::collection(Forum::with('User')->where('category', $tag)->paginate(3));
     }
 
     /**
@@ -58,7 +64,9 @@ class ForumController extends Controller
      */
     public function show($id)
     {
-        return Forum::with('User:id,username', 'ForumComments.user:id,username')->find($id);
+        return new ForumResource(
+            Forum::with('User', 'ForumComments.User')->find($id)
+        );
     }
 
     /**
@@ -97,7 +105,7 @@ class ForumController extends Controller
     public function destroy($id)
     {
         $forum = Forum::find($id);
-        
+
         // check ownership
         $this->checkOwnership($forum->user_id);
 
@@ -120,5 +128,4 @@ class ForumController extends Controller
             exit;
         }
     }
-
 }
