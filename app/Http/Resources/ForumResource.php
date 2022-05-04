@@ -22,8 +22,8 @@ class ForumResource extends JsonResource
             'category' => $this->category,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'User' => $this->User,
-            'ForumComments' => $this->ForumComments,
+            'user' => $this->User,
+            'comments' => $this->ForumComments,
         ];
     }
 }

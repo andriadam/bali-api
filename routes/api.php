@@ -25,6 +25,7 @@ Route::group(['middleware' => 'api'], function ($router){
     });
 
     Route::get('user/@{username}', 'UserController@show');
+    Route::get('user/@{username}/activity', 'UserController@getActivity');
     Route::get('forums/tag/{tag}', 'ForumController@filterTag');
     Route::apiResource('forums', 'ForumController');
     Route::apiResource('forums.comment', 'ForumCommentController');

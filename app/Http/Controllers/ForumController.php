@@ -124,7 +124,7 @@ class ForumController extends Controller
         ]);
 
         if ($validator->fails()) {
-            response()->json($validator->messages())->send();
+            response()->json($validator->messages(), 422)->send();
             exit;
         }
     }
