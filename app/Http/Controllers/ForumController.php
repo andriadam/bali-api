@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthUserTrait;
 use App\Http\Resources\ForumResource;
+use App\Http\Resources\ForumsResource;
 
 class ForumController extends Controller
 {
@@ -25,7 +26,7 @@ class ForumController extends Controller
      */
     public function index()
     {
-        return ForumResource::collection(Forum::with('User')->paginate(3));
+        return ForumsResource::collection(Forum::with('User')->withCount('comments')->paginate(3));
     }
    
     public function filterTag($tag)
@@ -65,7 +66,7 @@ class ForumController extends Controller
     public function show($id)
     {
         return new ForumResource(
-            Forum::with('User', 'ForumComments.User')->find($id)
+            Forum::with('User', 'comments.User')->find($id)
         );
     }
 

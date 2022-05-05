@@ -15,7 +15,7 @@ class Forum extends Model
         return $this->belongsTo(User::class)->select(['id', 'username']);
     }
 
-    public function ForumComments()
+    public function comments()
     {
         return $this->hasMany(ForumComment::class);
     }
