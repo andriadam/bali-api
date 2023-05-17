@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ForumComment;
+use App\Jobs\ProcessComment;
+use App\Models\NewsComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ForumCommentController extends Controller
+class NewsCommentController extends Controller
 {
     use AuthUserTrait;
 
@@ -30,16 +31,18 @@ class ForumCommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $idForum)
+    public function store(Request $request, $newsId)
     {
         $this->validateRequest();
 
         $user = $this->getAuthUser();
 
         // Simpan ke database
-        $user->ForumComments()->create([
+        // Tambahkan job ke dalam Redis queue
+        ProcessComment::dispatch([
             'body' => request('body'),
-            'forum_id' => $idForum
+            'user_id' => $user->id,
+            'news_id' => $newsId,
         ]);
 
         return response()->json(['message' => 'Successfully comment posted']);
@@ -63,17 +66,17 @@ class ForumCommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $forumId, $commentId)
+    public function update(Request $request, $newsId, $commentId)
     {
         $this->validateRequest();
 
-        $forumComment = ForumComment::find($commentId);
+        $newsComment = NewsComment::find($commentId);
 
         // check ownership
-        $this->checkOwnership($forumComment->user_id);
+        $this->checkOwnership($newsComment->user_id);
 
         // Simpan ke database
-        $forumComment->update([
+        $newsComment->update([
             'body' => request('body'),
         ]);
 
@@ -86,15 +89,15 @@ class ForumCommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($forumId, $commentId)
+    public function destroy($newsId, $commentId)
     {
-        $forumComment = ForumComment::find($commentId);
+        $newsComment = NewsComment::find($commentId);
 
         // check ownership
-        $this->checkOwnership($forumComment->user_id);
+        $this->checkOwnership($newsComment->user_id);
 
         // Hapus di database
-        $forumComment->delete();
+        $newsComment->delete();
 
         return response()->json(['message' => 'Successfully comment deleted']);
     }

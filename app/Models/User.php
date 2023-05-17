@@ -43,14 +43,14 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
-    public function Forums()
+    public function News()
     {
-        return $this->hasMany(Forum::class)->orderBy('id', 'desc')->limit(5);
+        return $this->hasMany(News::class)->orderBy('id', 'desc')->limit(5);
     }
 
-    public function ForumComments()
+    public function NewsComments()
     {
-        return $this->hasMany(ForumComment::class)->orderBy('id', 'desc')->limit(5);
+        return $this->hasMany(NewsComment::class)->orderBy('id', 'desc')->limit(5);
     }
 
     /**

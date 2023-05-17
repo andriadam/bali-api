@@ -13,6 +13,6 @@ class UserController extends Controller
     }
     
     public function getActivity($username){
-        return new UserResource(User::where('username', $username)->with('Forums', 'ForumComments')->first());
+        return new UserResource(User::where('username', $username)->with('News', 'NewsComments')->first());
     }
 }

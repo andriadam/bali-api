@@ -19,8 +19,8 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'created_at' => $this->created_at,
             'activity' => [
-                'forums' => $this->Forums,
-                'comments' => $this->ForumComments
+                'news' => $this->News,
+                'comments' => $this->NewsComments
             ]
         ];
     }

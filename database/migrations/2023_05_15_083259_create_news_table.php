@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateForumCommentsTable extends Migration
+class CreateNewsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,17 @@ class CreateForumCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('forum_comments', function (Blueprint $table) {
+        Schema::create('news', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->string('slug');
             $table->string('body');
+            $table->string('category');
+            $table->string('image');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('forum_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('forum_id')->references('id')->on('forums');
         });
     }
 
@@ -32,6 +34,6 @@ class CreateForumCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('forum_comments');
+        Schema::dropIfExists('news');
     }
 }

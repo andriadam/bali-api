@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Forum extends Model
+class NewsComment extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
@@ -15,8 +15,8 @@ class Forum extends Model
         return $this->belongsTo(User::class)->select(['id', 'username']);
     }
 
-    public function comments()
+    public function News()
     {
-        return $this->hasMany(ForumComment::class);
+        return $this->belongsTo(News::class);
     }
 }
